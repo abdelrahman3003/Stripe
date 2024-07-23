@@ -5,8 +5,10 @@ import '../../../constant/colors.dart';
 import '../../styles.dart';
 
 class AppTextButton extends StatelessWidget {
-  const AppTextButton({super.key, required this.text, this.onPressed});
+  const AppTextButton(
+      {super.key, required this.text, this.onPressed, this.isloading = false});
   final String text;
+  final bool isloading;
   final void Function()? onPressed;
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,8 @@ class AppTextButton extends StatelessWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
         ),
-        child: Text(text, style: Styles.textStyle22w500));
+        child: isloading
+            ? const CircularProgressIndicator()
+            : Text(text, style: Styles.textStyle22w500));
   }
 }

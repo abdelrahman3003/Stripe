@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 import '../../../../core/class/crud.dart';
@@ -7,9 +8,11 @@ class StripeData {
   Crud crud = Crud();
   createPaymentIntent(PaymentIntentInputModel paymentIntentInputModel) async {
     var response = await crud.postData(
-        url: "https://api.stripe.com/v1/payment_intents",
-        data: paymentIntentInputModel.toJson());
-    return response;
+      url: "https://api.stripe.com/v1/payment_intents",
+      data: paymentIntentInputModel.toJson(),
+      contentType: Headers.formUrlEncodedContentType,
+    );
+    return response.fold((l) => l, (r) => r);
   }
 
   Future iniPaymentSheet({
@@ -23,6 +26,6 @@ class StripeData {
   }
 
   Future displayPaymentSheet() async {
-   await Stripe.instance.presentPaymentSheet();
+    await Stripe.instance.presentPaymentSheet();
   }
 }

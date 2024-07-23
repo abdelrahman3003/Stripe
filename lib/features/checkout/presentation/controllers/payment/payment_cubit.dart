@@ -20,6 +20,7 @@ class PaymentCubit extends Cubit<PaymentState> {
         await stripeData.createPaymentIntent(paymentIntentInputModel);
     statusRequest = handlingApiData(response);
     if (statusRequest == StatusRequest.success) {
+      print("=================== response : $response");
       PaymentIntentModel paymentIntentModel =
           PaymentIntentModel.fromJson(response);
       await stripeData.iniPaymentSheet(
@@ -29,5 +30,6 @@ class PaymentCubit extends Cubit<PaymentState> {
     } else {
       emit(PaymentFailure(erroMessage: "$statusRequest"));
     }
+    print("==========status :$statusRequest");
   }
 }

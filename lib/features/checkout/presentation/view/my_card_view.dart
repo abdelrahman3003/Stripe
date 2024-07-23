@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stripe1/features/checkout/data/model/payment_intent_input_model/payment_intent_input_model.dart.dart';
+import 'package:stripe1/features/checkout/presentation/controllers/payment/payment_cubit.dart';
+import 'package:stripe1/features/checkout/presentation/view/payment_details_view.dart';
 import 'package:svg_flutter/svg.dart';
 
 import '../../../../core/constant/assets.dart';
@@ -77,8 +81,32 @@ class MyCardView extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                const AppTextButton(
-                  text: "Complete Payment",
+                BlocProvider(
+                  create: (context) => PaymentCubit(),
+                  child: BlocConsumer<PaymentCubit, PaymentState>(
+                    listener: (context, state) {
+                      if (state is PaymentSucess) {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const PaymentDetailsView(),
+                        ));
+                      }
+                      if (state is PaymentFailure) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(state.erroMessage)));
+                      }
+                    },
+                    builder: (context, state) {
+                      return AppTextButton(
+                        isloading: state is PaymentLoading ? true : false,
+                        text: "Complete Payment",
+                        onPressed: () {
+                          BlocProvider.of<PaymentCubit>(context).payment(
+                              PaymentIntentInputModel(
+                                  amount: '200', currency: 'USD'));
+                        },
+                      );
+                    },
+                  ),
                 )
               ],
             ),
